@@ -8,8 +8,8 @@
 // OLED pin definitions
 #define OLED_CLK      23
 #define OLED_MOSI     22
-#define OLED_RST      1
-#define OLED_DC       3
+#define OLED_RST      4
+#define OLED_DC       5
 #define OLED_CS       12
 
 
