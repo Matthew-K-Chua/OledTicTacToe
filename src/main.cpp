@@ -252,13 +252,22 @@ void setup()   {
 
   // Start OLED
   display.begin(0, true); // we dont use the i2c address but we will reset!
-  display.setRotation();
+  // display.setRotation();
+
+  display.setRotation(2); // Set rotation to 180 degrees
+  display.clearDisplay(); // Clear the display buffer
+  display.setTextSize(1); // Set text size
+  display.setTextColor(SH110X_WHITE); // Set text color
+  display.setCursor(0, 0); // Set cursor position
+  display.println("Hello, World!"); // Print message
+  display.display(); // Update the display with the buffer content
+  delay(100000);
 
   // Show image buffer on the display hardware.
   // Since the buffer is intialized with an Adafruit splashscreen
   // internally, this will display the splashscreen.
-  display.display();
-  delay(2000);
+  // display.display();
+  // delay(2000);
 
   // Clear the buffer.
   display.clearDisplay();
@@ -326,18 +335,7 @@ void setup()   {
 
 
   // text display tests
-  display.setTextSize(1);
-  display.setTextColor(SH110X_WHITE);
-  display.setCursor(0, 0);
-  display.println("Failure is always an option");
-  display.setTextColor(SH110X_BLACK, SH110X_WHITE); // 'inverted' text
-  display.println(3.141592);
-  display.setTextSize(2);
-  display.setTextColor(SH110X_WHITE);
-  display.print("0x"); display.println(0xDEADBEEF, HEX);
-  display.display();
-  delay(2000);
-  display.clearDisplay();
+
 
   // miniature bitmap display
   display.drawBitmap(30, 16,  logo16_glcd_bmp, 16, 16, 1);
