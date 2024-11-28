@@ -19,40 +19,13 @@
 // Create the OLED display
 Adafruit_SH1106G display = Adafruit_SH1106G(128, 64,OLED_MOSI, OLED_CLK, OLED_DC, OLED_RST, OLED_CS);
 
-#define NUMFLAKES 10
-#define XPOS 0
-#define YPOS 1
-#define DELTAY 2
-
-#define LOGO16_GLCD_HEIGHT 16
-#define LOGO16_GLCD_WIDTH  16
-static const unsigned char PROGMEM logo16_glcd_bmp[] =
-{ B00000000, B11000000,
-  B00000001, B11000000,
-  B00000001, B11000000,
-  B00000011, B11100000,
-  B11110011, B11100000,
-  B11111110, B11111000,
-  B01111110, B11111111,
-  B00110011, B10011111,
-  B00011111, B11111100,
-  B00001101, B01110000,
-  B00011011, B10100000,
-  B00111111, B11100000,
-  B00111111, B11110000,
-  B01111100, B11110000,
-  B01110000, B01110000,
-  B00000000, B00110000
-};
-
-// int board[3][3] = {{1, -1, 1}, {1, 1, 0}, {-1, 0, -1}};
-int board[3][3] = {{1, 1, -1}, {-1, 1, 1}, {1, -1, -1}};
-// int board[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+int board[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 int currentRow;
 int currentCol;
 const int blinkTime = 250;
 int player = 1;
 int winner = 0;
+
 
 void displayBoard() {
   display.clearDisplay();
@@ -83,41 +56,13 @@ void displayBoard() {
     display.setCursor(0, row*10); // Set cursor position
     display.println(rowString);
   }
-  display.display(); // Update the display with the buffer content
-}
-
-
-void displayBoardSerial() {
-  for (int row=0;row<3;row++) { //rows
-    String rowString = "";
-    for (int column=0;column<3;column++) { //columns
-      String colString = "";
-      switch (board[row][column]) {
-        case 0:
-          colString = "   ";
-          rowString = rowString + colString;
-          Serial.print(colString);
-          break;
-        case 1:
-          colString = " X ";
-          rowString = rowString + colString;
-          Serial.print(colString);
-          break;
-        case -1:
-          colString = " O ";
-          rowString = rowString + colString;
-          Serial.print(colString);
-          break;
-      }
-      if (column < 2) {
-        rowString = rowString + "|";
-        Serial.print("|");
-      }
-    } 
-    Serial.println();
+  display.setCursor(0, 50); // Set cursor position
+  if (player == 1) {
+    display.println("It's X's Turn");
+  }  else {
+    display.println("It's O's Turn");
   }
-  Serial.println();
-  Serial.println("--------------------");
+  display.display(); // Update the display with the buffer content
 }
 
 void blinkBoard(bool tokenBlink) {
@@ -212,18 +157,25 @@ bool checkTermination2D() {
 }
 
 void printWinners() {
+  display.clearDisplay(); // Clear the display buffer
+  display.setTextSize(1); // Set text size
+  display.setTextColor(SH110X_WHITE); // Set text color
+  display.setCursor(0, 32); // Set cursor position
+  String winnerString;
   if (winner == 0) {
-    Serial.println("It's a draw!");
+    winnerString = "It's a draw!";
   } else {
-    Serial.print("The winner is player ");
+    winnerString = "Player ";
     if (winner == 1) {
-      Serial.print("X");
+      winnerString = winnerString + "X";
     } else {
-      Serial.print("O");
+      winnerString = winnerString + "O";
     }
-    Serial.println("!");
+    winnerString = winnerString + " wins!";
   }
-  delay(500);
+  display.println(winnerString); // Print message
+  display.display(); // Update the display with the buffer content
+  delay(1000);
 }
 
 void resetGame() {
@@ -265,8 +217,6 @@ void loop() {
   }
   displayBoard();
   printWinners();
-  delay(100);
+  delay(1000);
   resetGame();
 }
-
-// says winner is player X 
