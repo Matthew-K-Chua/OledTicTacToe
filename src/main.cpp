@@ -46,33 +46,13 @@ static const unsigned char PROGMEM logo16_glcd_bmp[] =
 };
 
 // int board[3][3] = {{1, -1, 1}, {1, 1, 0}, {-1, 0, -1}};
-int board[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+int board[3][3] = {{1, 1, -1}, {-1, 1, 1}, {1, -1, -1}};
+// int board[3][3] = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
 int currentRow;
 int currentCol;
 const int blinkTime = 250;
 int player = 1;
 int winner = 0;
-
-void displayExample() {
-  display.clearDisplay();
-  String stringOne   = " X | O | X ";
-  String stringTwo   = " X | O | X ";
-  String stringThree = " O | X | O ";
-
-  display.setTextSize(1); // Set text size
-  display.setTextColor(SH110X_WHITE); // Set text color
-
-  display.setCursor(0, 0); // Set cursor position
-  display.println(stringOne); // Print message
-
-  display.setCursor(0, 10); // Set cursor position
-  display.println(stringTwo); // Print message
-
-  display.setCursor(0, 20); // Set cursor position
-  display.println(stringThree); // Print message
-
-  display.display(); // Update the display with the buffer content
-}
 
 void displayBoard() {
   display.clearDisplay();
@@ -172,7 +152,8 @@ void selectSquare() {
           currentCol = column;
           int action = 0; // 0 = nothing, 1 = select, 2 = next square
           int nextBlink = millis() + blinkTime;
-          bool tokenBlink = true;
+          bool tokenBlink = false;
+          blinkBoard(!tokenBlink);
           while (action == 0) {
             if (millis() > nextBlink) {
               blinkBoard(tokenBlink);
@@ -232,7 +213,7 @@ bool checkTermination2D() {
 
 void printWinners() {
   if (winner == 0) {
-    Serial.println("DRAW!");
+    Serial.println("It's a draw!");
   } else {
     Serial.print("The winner is player ");
     if (winner == 1) {
@@ -251,13 +232,13 @@ void resetGame() {
       board[row][column] = 0;
     }
   }
+  winner = 0;
+  player = 1;
 }
 
 void setup()   {
   Serial.begin(9600); // Initialise Serial for later debugging
   delay(100);
-  Serial.println("PLZ WORK");
-  delay(1000);
 
   pinMode(LButton, INPUT);
   pinMode(RButton, INPUT);
@@ -271,10 +252,9 @@ void setup()   {
   display.setTextSize(1); // Set text size
   display.setTextColor(SH110X_WHITE); // Set text color
   display.setCursor(0, 0); // Set cursor position
-  display.println("Hello, World!"); // Print message
+  display.println("Loading game..."); // Print message
   display.display(); // Update the display with the buffer content
   display.clearDisplay(); // Clear the display buffer
-
   delay(1000);
 }
 
@@ -283,7 +263,10 @@ void loop() {
       selectSquare();
       player = -player;
   }
+  displayBoard();
   printWinners();
-  delay(500);
+  delay(100);
   resetGame();
 }
+
+// says winner is player X 
